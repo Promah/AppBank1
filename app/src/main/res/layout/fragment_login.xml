@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+                xmlns:tools="http://schemas.android.com/tools"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                tools:context=".LoginFragment"
+                android:gravity="center">
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+    >
+        <EditText android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/inputUserLogin"
+                  android:inputType="phone"
+                  android:textAlignment="center"
+                  android:ems="12" android:hint="login/phone"/>
+        <View
+                android:id="@+id/divider"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="?android:attr/listDivider"
+        />
+        <EditText android:layout_width="match_parent"
+                  android:layout_height="wrap_content"
+                  android:id="@+id/inputUserPassword"
+                  android:textAlignment="center"
+                  android:ems="12"
+                  android:inputType="textPassword" tools:text="pass" android:hint="password"/>
+        <View
+                android:id="@+id/divider2"
+                android:layout_width="match_parent"
+                android:layout_height="5dp"
+                android:background="?android:attr/listDivider"
+        />
+        <Button
+                android:text="Sign In"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonSignIn"/>
+        <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent">
+            <TextView
+                    android:text="First time -"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:layout_weight="1" android:textAlignment="textEnd"/>
+            <TextView
+                    android:text="Register"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" android:id="@+id/textViewRegister" android:layout_weight="1"
+                    android:textColor="#3647A2"/>
+        </LinearLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

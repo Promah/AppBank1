@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="match_parent"
+             android:layout_height="match_parent"
+             tools:context=".UserCabinetFragment">
+
+
+    <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+        <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/textViewUserCabinetUserBalance"
+                android:layout_gravity="center_horizontal"
+                tools:text="balance"
+        />
+
+        <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
+        <LinearLayout
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center" android:background="#60009688">
+            <TextView
+                    android:text="Send money from you"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content" android:textAlignment="viewStart"/>
+            <EditText android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/inputUserCabinetUserRetrieverLogin"
+                      android:textAlignment="center"
+                      android:ems="12"
+                      android:inputType="phone"
+                      android:hint="RetrieverLogin"/>
+            <EditText android:layout_width="match_parent"
+                      android:layout_height="wrap_content"
+                      android:id="@+id/inputUserCabinetMoneyAmount"
+                      android:textAlignment="center"
+                      android:ems="12"
+                      android:inputType="number"
+                      android:hint="MoneyAmount"/>
+            <Button
+                    android:text="Send Money"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/buttonSendMoney"/>
+        </LinearLayout>
+        <Space
+                android:layout_width="match_parent"
+                android:layout_height="20dp"/>
+        <Button
+                android:text="Transaction History"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:id="@+id/buttonViewTransactionHistory"/>
+
+    </LinearLayout>
+
+
+
+
+</ScrollView>
