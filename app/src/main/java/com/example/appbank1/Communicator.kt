@@ -26,12 +26,11 @@ class Communicator : ViewModel(){
 
     companion object{
         private val client = OkHttpClient()
-        private val URL_LOGIN = "http://avtomir.it-hb.org/avtomir_api/login/?"
-        private val URL_GETUSERBALANCE = "http://avtomir.it-hb.org/avtomir_api/getUserBalance?"
-        private val URL_REGISTER = "http://avtomir.it-hb.org/avtomir_api/register?"
-        private val URL_SEND_MONEY = "http://avtomir.it-hb.org/avtomir_api/send_money?"
-        private val URL_TRANSACTION_HISTORY = "http://avtomir.it-hb.org/avtomir_api/getUserTransactionHistory/?"
-
+        private val URL_LOGIN = "http://a2cad.it-hb.org/api/api_bank/request/user/login?"
+        private val URL_GETUSERBALANCE = "http://a2cad.it-hb.org/api/api_bank/request/user/getBalance?"
+        private val URL_REGISTER = "http://a2cad.it-hb.org/api/api_bank/request/user/register?"
+        private val URL_SEND_MONEY = "http://a2cad.it-hb.org/api/api_bank/request/user/sendMoney?"
+        private val URL_TRANSACTION_HISTORY = "http://a2cad.it-hb.org/api/api_bank/request/user/getTransactionHistory?"
     }
 
 
@@ -62,7 +61,7 @@ class Communicator : ViewModel(){
             val savedToken = getSavedToken()
             if (savedToken != null){
                 val request = Request.Builder()
-                    .url("${URL_GETUSERBALANCE}token=$savedToken")
+                    .url("${URL_GETUSERBALANCE}user_token=$savedToken")
                     .build()
 
                 client.newCall(request).enqueue(object : Callback {
@@ -79,17 +78,19 @@ class Communicator : ViewModel(){
                     override fun onResponse(call: Call, response: Response) {
                         val json = JSONObject(response.body()?.string())
                         val mMessage = Message()
-                        if (json.getInt("success") == 1){
+                        if (json.getInt("error_code") == 0){
+                            val data = json.getJSONObject("data")
+                            val balance = data.getString("balance")
                             mMessage.obj = ServerResponseData(
                                 isSuccessful = true,
                                 header = ServerResponseData.HEADER_BALANCE,
-                                data = json.getString("data")
+                                data = balance
                             )
                         }else{
                             mMessage.obj = ServerResponseData(
                                 isSuccessful = false,
                                 header = ServerResponseData.HEADER_ERROR,
-                                data = json.getString("err")
+                                data = json.getString("message")
                             )
                         }
 
@@ -97,7 +98,6 @@ class Communicator : ViewModel(){
                     }
 
                 })
-
             }else{
                 val mMessage = Message()
                 mMessage.obj = ServerResponseData(
@@ -107,18 +107,14 @@ class Communicator : ViewModel(){
                 )
                 requestResultHandler.handleMessage(mMessage)
             }
-
-
-
         })
     }
 
     fun login(tel :String, pass: String){
         requestResultHandler.post(Runnable {
             val request = Request.Builder()
-                .url("${URL_LOGIN}user_name=${tel.removePrefix("+")}&user_pass=${pass}")
+                .url("${URL_LOGIN}user_login=${tel.removePrefix("+")}&user_password=${pass}")
                 .build()
-
 
             client.newCall(request).enqueue(object : Callback {
                 override fun onFailure(call: Call, e: IOException) {
@@ -135,8 +131,9 @@ class Communicator : ViewModel(){
                     val json = JSONObject(response.body()?.string())
                     val mMessage = Message()
 
-                    if (json.getInt("success") == 1){
-                        val token = json.getString("token")
+                    if (json.getInt("error_code") == 0){
+                        val data = json.getJSONObject("data")
+                        val token = data.getString("token")
                         if (token != null){
                             saveToken(token)
                             mMessage.obj = ServerResponseData(
@@ -155,23 +152,19 @@ class Communicator : ViewModel(){
                         mMessage.obj = ServerResponseData(
                             isSuccessful = false,
                             header = ServerResponseData.HEADER_ERROR,
-                            data = json.getString("err")
+                            data = json.getString("message")
                         )
                     }
-
                     requestResultHandler.handleMessage(mMessage)
                 }
-
             })
-
         })
-
     }
 
     fun register(tel :String, pass: String){
         requestResultHandler.post(Runnable {
             val request = Request.Builder()
-                .url("${URL_REGISTER}user_name=${tel.removePrefix("+")}&user_pass=${pass}")
+                .url("${URL_REGISTER}user_login=${tel.removePrefix("+")}&user_password=${pass}")
                 .build()
 
 
@@ -190,8 +183,9 @@ class Communicator : ViewModel(){
                     val json = JSONObject(response.body()?.string())
                     val mMessage = Message()
 
-                    if (json.getInt("success") == 1){
-                        val token = json.getString("token")
+                    if (json.getInt("error_code") == 0){
+                        val data = json.getJSONObject("data")
+                        val token = data.getString("token")
                         if (token != null){
                             saveToken(token)
                             mMessage.obj = ServerResponseData(
@@ -210,18 +204,13 @@ class Communicator : ViewModel(){
                         mMessage.obj = ServerResponseData(
                             isSuccessful = false,
                             header = ServerResponseData.HEADER_ERROR,
-                            data = json.getString("err")
+                            data = json.getString("message")
                         )
                     }
-
-
                     requestResultHandler.handleMessage(mMessage)
                 }
-
             })
-
         })
-
     }
 
     fun sendMoney(receiverTel: String, amount : Int){
@@ -246,22 +235,21 @@ class Communicator : ViewModel(){
                     override fun onResponse(call: Call, response: Response) {
                         val json = JSONObject(response.body()?.string())
                         val mMessage = Message()
-                        if (json.getInt("success") == 1){
+                        if (json.getInt("error_code") == 0){
                             mMessage.obj = ServerResponseData(
                                 isSuccessful = true,
                                 header = ServerResponseData.HEADER_SEND_MONEY,
-                                data = json.getString("data")
+                                data = json.getString("message")
                             )
                         }else{
                             mMessage.obj = ServerResponseData(
                                 isSuccessful = false,
                                 header = ServerResponseData.HEADER_ERROR,
-                                data = json.getString("err")
+                                data = json.getString("message")
                             )
                         }
                         requestResultHandler.handleMessage(mMessage)
                     }
-
                 })
             }else{
                 val mMessage = Message()
@@ -272,7 +260,6 @@ class Communicator : ViewModel(){
                 )
                 requestResultHandler.handleMessage(mMessage)
             }
-
         })
     }
 
@@ -282,7 +269,7 @@ class Communicator : ViewModel(){
             if (savedToken != null){
 
                 val request = Request.Builder()
-                    .url("${URL_TRANSACTION_HISTORY}token=$savedToken")
+                    .url("${URL_TRANSACTION_HISTORY}user_token=$savedToken")
                     .build()
 
                 client.newCall(request).enqueue(object : Callback {
@@ -299,7 +286,7 @@ class Communicator : ViewModel(){
                     override fun onResponse(call: Call, response: Response) {
                         val json = JSONObject(response.body()?.string())
                         val mMessage = Message()
-                        if (json.getInt("success") == 1){
+                        if (json.getInt("error_code") == 0){
 
                             val itemListJSON = json.getJSONArray("data")
                             val itemListCount = itemListJSON.length()
@@ -314,7 +301,6 @@ class Communicator : ViewModel(){
                                     transactionTimeText = row.getString("at_time")
                                 ))
                             }
-
                             mMessage.obj = ServerResponseData(
                                 isSuccessful = true,
                                 header = ServerResponseData.HEADER_TRANSACTION_HISTORY,
@@ -324,14 +310,12 @@ class Communicator : ViewModel(){
                             mMessage.obj = ServerResponseData(
                                 isSuccessful = false,
                                 header = ServerResponseData.HEADER_ERROR,
-                                data = json.getString("err")
+                                data = json.getString("message")
                             )
                         }
                         requestResultHandler.handleMessage(mMessage)
                     }
-
                 })
-
             }else{
                 val mMessage = Message()
                 mMessage.obj = ServerResponseData(
@@ -341,7 +325,6 @@ class Communicator : ViewModel(){
                 )
                 requestResultHandler.handleMessage(mMessage)
             }
-
         })
     }
 
